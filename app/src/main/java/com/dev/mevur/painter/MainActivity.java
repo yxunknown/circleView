@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         circleView = findViewById(R.id.circle);
         circleView.setScore(98.9f);
         circleView.setCentralText("50fen");
-        circleView.setStrokeWidth(30);
+        circleView.setStrokeWidth(15);
         circleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
