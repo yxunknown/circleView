@@ -31,14 +31,23 @@ public class CircleView extends View {
     private PathMeasure pathMeasure;
     private ValueAnimator animator;
 
-    private float angels = 359;
+    private float angels = 0;
     private int baseColor = Color.parseColor("#EEEEEE");
     private int topColor = Color.GREEN;
     private String centralText = "";
+    private float score = 63;
 
     private int strokeWidth = 10;
 
-    private int[] colors = {Color.RED, Color.YELLOW, Color.GREEN};
+    //default colors: red, orange, yellow, green
+    private int[] colors = {
+            Color.parseColor("#FF0000"),
+            Color.parseColor("#FFA500"),
+            Color.parseColor("#FFFF00"),
+            Color.parseColor("#00AA00"),
+            Color.parseColor("#FF0000")};
+    //default score: 60.0, 80.0, 90.0, 100.0
+    private float[] colorPositions = {0.6f, 0.8f, 0.9f, 0.995f, 1};
 
     public CircleView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -73,15 +82,15 @@ public class CircleView extends View {
         float start = 0;
         pathMeasure.getSegment(start, stop, dist, true);
         canvas.drawPath(dist, topPaint);
-        if (animationValue == 1) {
-            Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-            float top = fontMetrics.top;
-            float bottom = fontMetrics.bottom;
-            //place the text to the center of view
-            int baseLineY = (int) (rect.centerY() - top / 2 - bottom / 2);
 
-            canvas.drawText(centralText, rect.centerX(), baseLineY, textPaint);
-        }
+        Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+        float top = fontMetrics.top;
+        float bottom = fontMetrics.bottom;
+        //place the text to the center of view
+        int baseLineY = (int) (rect.centerY() - top / 2 - bottom / 2);
+        centralText = Math.round(score * animationValue) + "";
+        canvas.drawText(centralText, rect.centerX(), baseLineY, textPaint);
+
     }
 
     /**
@@ -107,11 +116,11 @@ public class CircleView extends View {
         topPaint.setStyle(Paint.Style.STROKE);
         topPaint.setStrokeWidth(strokeWidth);
         topPaint.setStrokeCap(Paint.Cap.ROUND);
-
-        float[] positions = {0.6f, 0.8f, 1f};
-        SweepGradient sweepGradient = new SweepGradient(width / 2, height / 2, colors, positions);
+        //init angels
+        angels = score / 100 * 360;
+        SweepGradient sweepGradient = new SweepGradient(width / 2, height / 2, colors, colorPositions);
         Matrix matrix = new Matrix();
-        matrix.setRotate(270, width / 2, height / 2);
+        matrix.setRotate(-90, width / 2, height / 2);
         sweepGradient.setLocalMatrix(matrix);
         topPaint.setShader(sweepGradient);
         //init the position of circle
@@ -150,10 +159,6 @@ public class CircleView extends View {
         textPaint.setTextAlign(Paint.Align.CENTER);
     }
 
-    public void setAngels(float angels) {
-        this.angels = angels;
-    }
-
     public void setBaseColor(int baseColor) {
         this.baseColor = baseColor;
     }
@@ -168,6 +173,18 @@ public class CircleView extends View {
 
     public void setStrokeWidth(int strokeWidth) {
         this.strokeWidth = strokeWidth;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    public void setColors(int[] colors) {
+        this.colors = colors;
+    }
+
+    public void setColorPositions(float[] colorPositions) {
+        this.colorPositions = colorPositions;
     }
 
     /**
